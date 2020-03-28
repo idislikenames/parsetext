@@ -6,29 +6,36 @@ from collections import Counter
 
 import re
 import fileinput
+import networkx as nx
 
 doc = None
-files = ["input/oxford_old_babylonian.txt",]
+#textfile = "input/m.txt"#"input/oxford_old_babylonian.txt",]
+textfile = "input/oxford_old_babylonian.txt"
 nlp = spacy.load("en_core_web_sm")
 #textfile = open("input/6bMBUrw.txt", "r")
 #textfile = open("input/ETCSL1.txt", "r")
-textfile = open("input/oxford_old_babylonian.txt", "r")
-raw= textfile.read()
-doc= nlp(raw)
-textfile.close()
 
-def clean_nums(files):
+
+def clean_nums(textfile):
     #raw= textfile.read()
+    for line in fileinput.input(textfile, inplace=True):
+        print(re.sub("[0-9]", "", line))
 
-    for line in fileinput.input(files, inplace=True):
-        print(re.sub("[^a-zA-Z]", " ", line))
+def read_input (input):
+    global doc
+    textfile = open(input, "r")
+    raw= textfile.read()
+    doc= nlp(raw)
+    textfile.close()
+
 
 def get_pos(doc):
     # doc = nlp("Lisa is happy. Bigbird is hugry. The sky is almost blue everyday. I sit in traffic for hours. Louise is brave. He looks angry. Four seconds is the longest wait.")
-    fb_ent = Span(doc, 20, 21, label="PERSON")  # Enkidu is at 20 , create a Span for the new entity
+    #fb_ent = Span(doc, 20, 21, label="PERSON")  # Enkidu is at 20 , create a Span for the new entity
     # fb_ent = Span(doc, 4, 5, label="PERSON")
-    doc.ents = list(doc.ents) + [fb_ent]
-    ents = [(e.text, e.start_char, e.end_char, e.label_) for e in doc.ents]
+
+    #doc.ents = list(doc.ents) + [fb_ent]
+    #ents = [(e.text, e.start_char, e.end_char, e.label_) for e in doc.ents]
     # print('After', ents)
 
     #token_span_one = doc[0:1]
@@ -36,14 +43,14 @@ def get_pos(doc):
     # print("sentence is"+sentence_one.text)
 
     # testing
-
+    '''
     token_test_span = doc[53:54]
     print(token_test_span)
     print(token_test_span.sent)
 
     token_test_span2 = doc[17:18]
     print(token_test_span2)
-    print(token_test_span2.sent)
+    print(token_test_span2.sent)'''
 
     person_ent_list = []
     for token in doc:
@@ -68,6 +75,8 @@ def get_pos(doc):
         for e in person_ent_list:
             if sentence_adj == e.sent:  # and e.head==a.head:
                 adj_on_person_list.append((e, a))
+
+
     """for a in adj_token_list:
         adj_span = doc[a.i:a.i + 1]
         sentence_adj = adj_span.sent
@@ -112,7 +121,7 @@ def get_pos(doc):
 
 
 def get_verb(doc):
-    # all tokens that arent stop words or punctuations
+    # list of adj
     adjs = [token for token in doc if token.is_stop != True and token.is_punct != True and token.pos_ == "ADJ"]
 
     # noun tokens that arent stop words or punctuations
@@ -142,7 +151,81 @@ def get_verb(doc):
     common_verbs = c.most_common(10)
     print(f'Most freq used verb : {common_verbs}')'''
 
-clean_nums(files)
-#get_pos(doc);
-get_verb(doc);
+def get_token_sent(token):
+    token_span = token.doc[token.i:token.i+1]
+    return token_span.sent
+
+def get_dist(doc):
+    # Load spacy's dependency tree into a networkx graph
+    edges = []
+    for token in doc:
+        for child in token.children:
+            edges.append(('{0}'.format(token.lower_),
+                          '{0}'.format(child.lower_)))
+    graph = nx.Graph(edges)
+    print(f'edges is {edges}')
+    adjs_tokens = [token for token in doc if token.is_stop != True and token.is_punct != True and token.pos_ == "ADJ"]
+    people_tokens = [token for token in doc if token.ent_type_ == "PERSON" or token.pos_ == "PRON"] #chang to use ent in doc.ents?
+    print(f'adj list is {adjs_tokens}')
+    print(f'people list is {people_tokens}')
+
+    # need a dic with token and it's sentence
+    #{(key people token, [adj list ] )}
+    '''test_list= ['a','b','c']
+    value =[]
+    test_d= {key: list(value) for key in test_list}
+    test_d['a'].append("ok")
+    print (f'{test_d} =========testing if append ')'''
+    value = []
+    people_adj_dict = {key: list(value) for key in people_tokens}
+    for k in people_adj_dict.keys():
+        for a in adjs_tokens:
+            if get_token_sent(k)==get_token_sent(a):
+                people_adj_dict[k].append(a)
+    print (f'ok now======people adj dic is {people_adj_dict}')
+
+    #maybe keep it dont change
+    '''for p in people_tokens: # given list of adj and people, get shortest distance if they are in same sentence.
+        for a in adjs_tokens:
+            if get_token_sent(p)==get_token_sent(a):
+                print(f'taken in same sentence {a.text.lower()} and {p.text.lower()}')
+                dist= nx.shortest_path(graph, source=a.text.lower(), target=p.text.lower())
+                print(f'Distance between {a} and {p} is {dist}')'''
+    ##### from above
+    object_list = [token for token in doc if token.ent_type_ == "PROPN" or token.ent_type_ == "PERSON"]
+
+    distance_dic = {}
+    for p in people_adj_dict.keys():
+        shortest_path_length_test = 99999
+        shortest_path_test = ''
+        for a in people_adj_dict.get(p):
+            #print(f'really here $$$ a is {a}')
+            #if get_token_sent(p) == get_token_sent(a):
+            #print(f'taken in same sentence {a.text.lower()} and {p.text.lower()}')
+            path = nx.shortest_path(graph, source=a.text.lower(), target=p.text.lower())
+            len = nx.shortest_path_length(graph, source=a.text.lower(), target=p.text.lower())
+            if shortest_path_length_test > len:
+                shortest_path_length_test = len
+                shortest_path_test = path
+        distance_dic[p]=(a, shortest_path_test, shortest_path_length_test)
+    print(f'====finally, dict with length is {distance_dic}')
+    ######
+    # Get a list of entity & pron in string format
+
+
+
+    # Get the length and path from each item in object_list to the nearest adj
+    #get sentence id , the compare all adj?
+    #for
+    '''entity1 = 'sue'.lower()
+    entity2 = 'tired'
+    print(nx.shortest_path_length(graph, source=entity1, target=entity2))
+    print(nx.shortest_path(graph, source=entity1, target=entity2))'''
+
+clean_nums(textfile)
+read_input(textfile)
+get_pos(doc)
+get_verb(doc)
+get_dist(doc)
+
 
