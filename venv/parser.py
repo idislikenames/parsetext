@@ -173,7 +173,7 @@ def get_dist(doc):
     print(f'Dict with person and distance to the nearest adj is {distance_dic}')
 
     pd.DataFrame(distance_dic).to_csv('/Users/wnba/PycharmProjects/readpoem/venv/output/dist_to_adj_output.csv', index=False)
- 
+
 
 clean_nums(textfile)
 remove_brackets_words(textfile)
