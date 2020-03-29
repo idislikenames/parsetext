@@ -123,10 +123,13 @@ def get_verb(doc):
     df= pd.DataFrame(common_verbs,columns=["verb", "appearance"])
     pd.DataFrame(df).to_csv('/Users/wnba/PycharmProjects/readpoem/venv/output/verb_freq.csv', index=False)
 
+
 def get_token_sent(token):
     token_span = token.doc[token.i:token.i+1]
     return token_span.sent
 
+
+# get distance between verbs and their nearest adjs
 def get_dist(doc):
     # Load spacy's dependency tree into a networkx graph
     edges = []
