@@ -9,17 +9,29 @@ import fileinput
 import networkx as nx
 
 doc = None
-#textfile = "input/m.txt"#"input/oxford_old_babylonian.txt",]
-textfile = "input/oxford_old_babylonian.txt"
+textfile = "input/m.txt"#"input/oxford_old_babylonian.txt",]
+#textfile = "input/test_middle_babylonian.txt"
 nlp = spacy.load("en_core_web_sm")
+people_tokens = []
 #textfile = open("input/6bMBUrw.txt", "r")
 #textfile = open("input/ETCSL1.txt", "r")
 
 
 def clean_nums(textfile):
     #raw= textfile.read()
+    # delete numbers, [...], ·,
     for line in fileinput.input(textfile, inplace=True):
-        print(re.sub("[0-9]", "", line))
+        print(re.sub("[0-9]|\[(\s*\.\s*)*\]|[·]", "", line), end='')
+
+# if brackets have words in them, remove the brackets
+def remove_brackets(textfile):
+    for line in fileinput.input(textfile, inplace=True):
+        print (re.sub(r"\[([^]]+)\]", r"\1", line), end='')
+
+# remove brackets and words
+def remove_brackets_words(textfile):
+    for line in fileinput.input(textfile, inplace=True):
+        print(re.sub("[\(\[].*?[\)\]]", "", line), end='')
 
 def read_input (input):
     global doc
@@ -30,34 +42,9 @@ def read_input (input):
 
 
 def get_pos(doc):
-    # doc = nlp("Lisa is happy. Bigbird is hugry. The sky is almost blue everyday. I sit in traffic for hours. Louise is brave. He looks angry. Four seconds is the longest wait.")
-    #fb_ent = Span(doc, 20, 21, label="PERSON")  # Enkidu is at 20 , create a Span for the new entity
-    # fb_ent = Span(doc, 4, 5, label="PERSON")
 
-    #doc.ents = list(doc.ents) + [fb_ent]
-    #ents = [(e.text, e.start_char, e.end_char, e.label_) for e in doc.ents]
-    # print('After', ents)
-
-    #token_span_one = doc[0:1]
-    #sentence_one = token_span_one.sent
-    # print("sentence is"+sentence_one.text)
-
-    # testing
-    '''
-    token_test_span = doc[53:54]
-    print(token_test_span)
-    print(token_test_span.sent)
-
-    token_test_span2 = doc[17:18]
-    print(token_test_span2)
-    print(token_test_span2.sent)'''
-
-    person_ent_list = []
-    for token in doc:
-        if token.ent_type_ == 'PERSON' or token.pos_ == 'PRON':
-            person_ent_list.append(token)
-
-    # print(person_ent_list)
+    global people_tokens
+    people_tokens = [token for token in doc if token.ent_type_ == "PERSON" or token.pos_ == "PRON"]
 
     adj_token_list = []
     for token in doc:
@@ -72,8 +59,8 @@ def get_pos(doc):
         # print(f'e.start_char, end_char: {e.start_char} {e.end_char}')
         sentence_adj = adj_span.sent
         # for e in doc.ents:
-        for e in person_ent_list:
-            if sentence_adj == e.sent:  # and e.head==a.head:
+        for e in people_tokens:
+            if sentence_adj == e.sent and e.head==a.head:
                 adj_on_person_list.append((e, a))
 
 
@@ -82,19 +69,12 @@ def get_pos(doc):
         sentence_adj = adj_span.sent
         for x in """
 
-    print("Tuples of person, pronouns and adj, in same sentence with same head:")
-    print(adj_on_person_list)
+    print(f"Tuples of person, pronouns and adj, in same sentence with same head: {adj_on_person_list}")
     print("")
-
-    """
-    for token in doc_test:
-        print(token.text, token.lemma_, token.pos_, token.tag_, token.dep_,
-                , token.is_alpha, token.is_stop)"""
-    print("Tokens after parsing:")
     tokenslist = [(token.i, token.text, token.lemma_, token.pos_, token.head, token.tag_,  # token.dep_,#token.shape_
                    token.is_alpha, token.is_stop, token.ent_type_) for token in doc]
-    print("")
 
+    print("Tokens after parsing:")
     print(tabulate(tokenslist, headers=["tokenid", "text", "lemma_", "pos_", "head", "tag_", "is_alpha", "is_stop",
                                         "ent_type_"]))  # "dep_","shape_",
 
@@ -119,6 +99,50 @@ def get_pos(doc):
     entities=[(i, i.label_, i.label) for i in nytimes.ents]
     entities"""
 
+# TODO : check for wrong tagging and delete before add ent, as one token can only be associated with one ent
+def add_ents(doc): #Enkidu as example row 16 in doc.
+    candidate_token = [token for token in doc if token.text.lower() in ("cp",)]
+    #idx is char offset within the doc
+    #for existing incorrect ent
+    new_ents = []
+    for ent in doc.ents:
+        if ent.label_ != "PERSON" and ent.text.lower() =="cp":
+            new_ent = Span(doc, ent.start, ent.end, label="PERSON")
+            new_ents.append(new_ent)
+        else:
+            new_ents.append(ent)
+    doc.ents = new_ents
+
+    #for new ent
+    for i in range(len(candidate_token)):
+        if candidate_token[i].ent_type_ == '':
+            print (f'Here is candidates and their token i {candidate_token[0],candidate_token[0].i}')# , candidate_token[0].idx}')
+            start_po = candidate_token[0].i
+            new_ent = Span(doc,start_po,start_po+1, label="PERSON") # Enkidu is at 20 , create a Span for the new entity
+            print (f'new ent is {new_ent}')
+            doc.ents = list(doc.ents) + [new_ent]
+            ents = [(e.text, e.start_char, e.end_char, e.label_) for e in doc.ents]
+
+    print('After', doc.ents)
+    # fb_ent = Span(doc, 4, 5, label="PERSON")
+
+    #doc.ents = list(doc.ents) + [fb_ent]
+    #ents = [(e.text, e.start_char, e.end_char, e.label_) for e in doc.ents]
+    # print('After', ents)
+
+    #token_span_one = doc[0:1]
+    #sentence_one = token_span_one.sent
+    # print("sentence is"+sentence_one.text)
+
+    # testing
+    '''
+    token_test_span = doc[53:54]
+    print(token_test_span)
+    print(token_test_span.sent)
+
+    token_test_span2 = doc[17:18]
+    print(token_test_span2)
+    print(token_test_span2.sent)'''
 
 def get_verb(doc):
     # list of adj
@@ -128,7 +152,6 @@ def get_verb(doc):
     verbs = [token for token in doc if token.is_stop != True and token.is_punct != True and token.pos_ == "VERB"]
 
     cnt_adj = Counter()
-    # five most common tokens
 
     for w in adjs: #['red', 'blue', 'red', 'green', 'blue', 'blue']:
         cnt_adj[w.text] += 1
@@ -137,19 +160,11 @@ def get_verb(doc):
 
     # verb tokens
     cnt_verb = Counter()
-
-    for word in verbs: #['red', 'blue', 'red', 'green', 'blue', 'blue']:
-        cnt_verb[word.text] += 1
+    for word in verbs: #word is type token
+        cnt_verb[word.text] += 1 #add one more count according to the key
     #print(cnt)
     common_verbs= cnt_verb.most_common(10)
     print(f'Most freq used verbs : {common_verbs}')
-    '''c = Counter(verbs)
-
-    #verb_freq = Counter(verbs)
-    print(verbs)
-    #print (verb_freq)
-    common_verbs = c.most_common(10)
-    print(f'Most freq used verb : {common_verbs}')'''
 
 def get_token_sent(token):
     token_span = token.doc[token.i:token.i+1]
@@ -163,52 +178,42 @@ def get_dist(doc):
             edges.append(('{0}'.format(token.lower_),
                           '{0}'.format(child.lower_)))
     graph = nx.Graph(edges)
-    print(f'edges is {edges}')
+    #print(f'edges is {edges}')
     adjs_tokens = [token for token in doc if token.is_stop != True and token.is_punct != True and token.pos_ == "ADJ"]
     people_tokens = [token for token in doc if token.ent_type_ == "PERSON" or token.pos_ == "PRON"] #chang to use ent in doc.ents?
     print(f'adj list is {adjs_tokens}')
     print(f'people list is {people_tokens}')
 
-    # need a dic with token and it's sentence
-    #{(key people token, [adj list ] )}
-    '''test_list= ['a','b','c']
-    value =[]
-    test_d= {key: list(value) for key in test_list}
-    test_d['a'].append("ok")
-    print (f'{test_d} =========testing if append ')'''
+    # first get a dict with token and it's sentence
+    #like this: {(key people token, [adj list ] ), (another person as key, [adj list] )...}
     value = []
     people_adj_dict = {key: list(value) for key in people_tokens}
     for k in people_adj_dict.keys():
         for a in adjs_tokens:
             if get_token_sent(k)==get_token_sent(a):
                 people_adj_dict[k].append(a)
-    print (f'ok now======people adj dic is {people_adj_dict}')
 
-    #maybe keep it dont change
+    #---find distance between two words in the same sentence
     '''for p in people_tokens: # given list of adj and people, get shortest distance if they are in same sentence.
         for a in adjs_tokens:
             if get_token_sent(p)==get_token_sent(a):
                 print(f'taken in same sentence {a.text.lower()} and {p.text.lower()}')
                 dist= nx.shortest_path(graph, source=a.text.lower(), target=p.text.lower())
                 print(f'Distance between {a} and {p} is {dist}')'''
-    ##### from above
-    object_list = [token for token in doc if token.ent_type_ == "PROPN" or token.ent_type_ == "PERSON"]
 
+    # distance_dic stores person and shortest path info.
     distance_dic = {}
     for p in people_adj_dict.keys():
-        shortest_path_length_test = 99999
+        shortest_path_length_test = 99999 #default length
         shortest_path_test = ''
-        for a in people_adj_dict.get(p):
-            #print(f'really here $$$ a is {a}')
-            #if get_token_sent(p) == get_token_sent(a):
-            #print(f'taken in same sentence {a.text.lower()} and {p.text.lower()}')
+        for a in people_adj_dict.get(p): # iterate through all the adj under that person, update the shortest path for that person
             path = nx.shortest_path(graph, source=a.text.lower(), target=p.text.lower())
             len = nx.shortest_path_length(graph, source=a.text.lower(), target=p.text.lower())
             if shortest_path_length_test > len:
                 shortest_path_length_test = len
                 shortest_path_test = path
         distance_dic[p]=(a, shortest_path_test, shortest_path_length_test)
-    print(f'====finally, dict with length is {distance_dic}')
+    print(f'Dict with person and distance to the nearest adj is {distance_dic}')
     ######
     # Get a list of entity & pron in string format
 
@@ -222,10 +227,13 @@ def get_dist(doc):
     print(nx.shortest_path_length(graph, source=entity1, target=entity2))
     print(nx.shortest_path(graph, source=entity1, target=entity2))'''
 
-clean_nums(textfile)
+#clean_nums(textfile)
+#remove_brackets_words(textfile)
+#remove_brackets(textfile)
+#run read input and get_pos to populate global people_ents list
 read_input(textfile)
+add_ents(doc)
 get_pos(doc)
-get_verb(doc)
-get_dist(doc)
 
-
+#get_verb(doc)
+#get_dist(doc)
