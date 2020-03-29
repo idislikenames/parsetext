@@ -150,14 +150,6 @@ def get_dist(doc):
             if get_token_sent(k)==get_token_sent(a):
                 people_adj_dict[k].append(a)
 
-    #---or loop through every thing to find distance between two words in the same sentence
-    '''for p in people_tokens: # given list of adj and people, get shortest distance if they are in same sentence.
-        for a in adjs_tokens:
-            if get_token_sent(p)==get_token_sent(a):
-                print(f'taken in same sentence {a.text.lower()} and {p.text.lower()}')
-                dist= nx.shortest_path(graph, source=a.text.lower(), target=p.text.lower())
-                print(f'Distance between {a} and {p} is {dist}')'''
-
     # distance_dic stores person and shortest path info.
     distance_dic = {}
     for p in people_adj_dict.keys():
