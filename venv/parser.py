@@ -7,10 +7,12 @@ from collections import Counter
 import re
 import fileinput
 import networkx as nx
+import csv
+import pandas as pd
 
 doc = None
-textfile = "input/m.txt"#"input/oxford_old_babylonian.txt",]
-#textfile = "input/test_middle_babylonian.txt"
+#textfile = "input/m.txt"#"input/oxford_old_babylonian.txt",]
+textfile = "input/test_middle_babylonian.txt"
 nlp = spacy.load("en_core_web_sm")
 people_tokens = []
 #textfile = open("input/6bMBUrw.txt", "r")
@@ -84,29 +86,14 @@ def get_pos(doc):
     print("Entities at a doc level:")
     print(tabulate(ents_list, headers=["text", "start_char", "end_char", "label_", "label"]))
 
-    # self.label = nlp.vocab.strings[label]
-    '''
-    # token level ent, ent for a specific token
-    ent_san = [doc[0].text, doc[0].ent_iob_, doc[0].ent_type_]
-    ent_francisco = [doc[1].text, doc[1].ent_iob_, doc[1].ent_type_]
-    print(ent_san)  # ['San', 'B', 'GPE']
-    print(ent_francisco)  # ['Francisco', 'I', 'GPE']
-    '''
-
-    """
-    for ent in doc.ents:
-        print(ent.text, ent.start_char, ent.end_char, ent.label_)
-    entities=[(i, i.label_, i.label) for i in nytimes.ents]
-    entities"""
-
-# TODO : check for wrong tagging and delete before add ent, as one token can only be associated with one ent
+# add or modify incorrect tags
 def add_ents(doc): #Enkidu as example row 16 in doc.
     candidate_token = [token for token in doc if token.text.lower() in ("cp",)]
     #idx is char offset within the doc
     #for existing incorrect ent
     new_ents = []
     for ent in doc.ents:
-        if ent.label_ != "PERSON" and ent.text.lower() =="cp":
+        if ent.label_ != "PERSON" and ent.text.lower() =="cp": # TODO: change to check in list
             new_ent = Span(doc, ent.start, ent.end, label="PERSON")
             new_ents.append(new_ent)
         else:
@@ -124,25 +111,7 @@ def add_ents(doc): #Enkidu as example row 16 in doc.
             ents = [(e.text, e.start_char, e.end_char, e.label_) for e in doc.ents]
 
     print('After', doc.ents)
-    # fb_ent = Span(doc, 4, 5, label="PERSON")
 
-    #doc.ents = list(doc.ents) + [fb_ent]
-    #ents = [(e.text, e.start_char, e.end_char, e.label_) for e in doc.ents]
-    # print('After', ents)
-
-    #token_span_one = doc[0:1]
-    #sentence_one = token_span_one.sent
-    # print("sentence is"+sentence_one.text)
-
-    # testing
-    '''
-    token_test_span = doc[53:54]
-    print(token_test_span)
-    print(token_test_span.sent)
-
-    token_test_span2 = doc[17:18]
-    print(token_test_span2)
-    print(token_test_span2.sent)'''
 
 def get_verb(doc):
     # list of adj
@@ -153,7 +122,7 @@ def get_verb(doc):
 
     cnt_adj = Counter()
 
-    for w in adjs: #['red', 'blue', 'red', 'green', 'blue', 'blue']:
+    for w in adjs:
         cnt_adj[w.text] += 1
     common_adj = cnt_adj.most_common(10)
     print(f'Most freq used adjectives : {common_adj}')
@@ -214,6 +183,8 @@ def get_dist(doc):
                 shortest_path_test = path
         distance_dic[p]=(a, shortest_path_test, shortest_path_length_test)
     print(f'Dict with person and distance to the nearest adj is {distance_dic}')
+
+    pd.DataFrame(distance_dic).to_csv('/Users/wnba/PycharmProjects/readpoem/venv/output/test_output.csv', index=False)
     ######
     # Get a list of entity & pron in string format
 
@@ -227,13 +198,24 @@ def get_dist(doc):
     print(nx.shortest_path_length(graph, source=entity1, target=entity2))
     print(nx.shortest_path(graph, source=entity1, target=entity2))'''
 
+def write_output_csv(itemDict):
+    with open('/Users/wnba/PycharmProjects/readpoem/venv/output/test_output.csv', 'wb') as outfile:
+        listWriter = csv.DictWriter(
+            outfile,
+            fieldnames=itemDict[itemDict.keys()[0]].keys(),
+            delimiter=',',
+            quotechar='|',
+            quoting=csv.QUOTE_MINIMAL
+        )
+    for a in itemDict:
+        listWriter.writerow(a)
 #clean_nums(textfile)
 #remove_brackets_words(textfile)
 #remove_brackets(textfile)
 #run read input and get_pos to populate global people_ents list
 read_input(textfile)
-add_ents(doc)
+#add_ents(doc)
 get_pos(doc)
+get_verb(doc)
+get_dist(doc)
 
-#get_verb(doc)
-#get_dist(doc)
