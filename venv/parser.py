@@ -15,22 +15,18 @@ doc = None
 textfile = "input/test_middle_babylonian.txt"
 nlp = spacy.load("en_core_web_sm")
 people_tokens = []
-#textfile = open("input/6bMBUrw.txt", "r")
-#textfile = open("input/ETCSL1.txt", "r")
 
-
+# delete numbers and symbols like [...], ·,
 def clean_nums(textfile):
-    #raw= textfile.read()
-    # delete numbers, [...], ·,
     for line in fileinput.input(textfile, inplace=True):
         print(re.sub("[0-9]|\[(\s*\.\s*)*\]|[·]", "", line), end='')
 
-# if brackets have words in them, remove the brackets
+# if brackets have words in them, remove only the brackets
 def remove_brackets(textfile):
     for line in fileinput.input(textfile, inplace=True):
         print (re.sub(r"\[([^]]+)\]", r"\1", line), end='')
 
-# remove brackets and words
+# remove brackets and words in between
 def remove_brackets_words(textfile):
     for line in fileinput.input(textfile, inplace=True):
         print(re.sub("[\(\[].*?[\)\]]", "", line), end='')
@@ -42,9 +38,7 @@ def read_input (input):
     doc= nlp(raw)
     textfile.close()
 
-
 def get_pos(doc):
-
     global people_tokens
     people_tokens = [token for token in doc if token.ent_type_ == "PERSON" or token.pos_ == "PRON"]
 
@@ -53,23 +47,15 @@ def get_pos(doc):
         if token.pos_ == 'ADJ':
             adj_token_list.append(token)
 
-    # could be optimized by intersect of sentence vector of adj and p
+# get a list of adjs and person if they are in the same sentence and having the same head
     adj_on_person_list = []
-
     for a in adj_token_list:
         adj_span = doc[a.i:a.i + 1]
         # print(f'e.start_char, end_char: {e.start_char} {e.end_char}')
         sentence_adj = adj_span.sent
-        # for e in doc.ents:
         for e in people_tokens:
             if sentence_adj == e.sent and e.head==a.head:
                 adj_on_person_list.append((e, a))
-
-
-    """for a in adj_token_list:
-        adj_span = doc[a.i:a.i + 1]
-        sentence_adj = adj_span.sent
-        for x in """
 
     print(f"Tuples of person, pronouns and adj, in same sentence with same head: {adj_on_person_list}")
     print("")
@@ -87,6 +73,8 @@ def get_pos(doc):
     print(tabulate(ents_list, headers=["text", "start_char", "end_char", "label_", "label"]))
 
 # add or modify incorrect tags
+# TODO: finish func of getting all the list of ents checked & assigned
+# TODO: see if new / wrong ent functions can be merged.
 def add_ents(doc): #Enkidu as example row 16 in doc.
     candidate_token = [token for token in doc if token.text.lower() in ("cp",)]
     #idx is char offset within the doc
@@ -100,7 +88,7 @@ def add_ents(doc): #Enkidu as example row 16 in doc.
             new_ents.append(ent)
     doc.ents = new_ents
 
-    #for new ent
+    # for new ent, if a candidate token was not assigned an entity type
     for i in range(len(candidate_token)):
         if candidate_token[i].ent_type_ == '':
             print (f'Here is candidates and their token i {candidate_token[0],candidate_token[0].i}')# , candidate_token[0].idx}')
@@ -108,7 +96,6 @@ def add_ents(doc): #Enkidu as example row 16 in doc.
             new_ent = Span(doc,start_po,start_po+1, label="PERSON") # Enkidu is at 20 , create a Span for the new entity
             print (f'new ent is {new_ent}')
             doc.ents = list(doc.ents) + [new_ent]
-            ents = [(e.text, e.start_char, e.end_char, e.label_) for e in doc.ents]
 
     print('After', doc.ents)
 
@@ -131,9 +118,10 @@ def get_verb(doc):
     cnt_verb = Counter()
     for word in verbs: #word is type token
         cnt_verb[word.text] += 1 #add one more count according to the key
-    #print(cnt)
     common_verbs= cnt_verb.most_common(10)
     print(f'Most freq used verbs : {common_verbs}')
+    df= pd.DataFrame(common_verbs,columns=["verb", "appearance"])
+    pd.DataFrame(df).to_csv('/Users/wnba/PycharmProjects/readpoem/venv/output/verb_freq.csv', index=False)
 
 def get_token_sent(token):
     token_span = token.doc[token.i:token.i+1]
@@ -153,7 +141,7 @@ def get_dist(doc):
     print(f'adj list is {adjs_tokens}')
     print(f'people list is {people_tokens}')
 
-    # first get a dict with token and it's sentence
+    # first get a dict with token and it's sentence, (bcs no sentence id, it builds a dict for later calculation) .
     #like this: {(key people token, [adj list ] ), (another person as key, [adj list] )...}
     value = []
     people_adj_dict = {key: list(value) for key in people_tokens}
@@ -162,7 +150,7 @@ def get_dist(doc):
             if get_token_sent(k)==get_token_sent(a):
                 people_adj_dict[k].append(a)
 
-    #---find distance between two words in the same sentence
+    #---or loop through every thing to find distance between two words in the same sentence
     '''for p in people_tokens: # given list of adj and people, get shortest distance if they are in same sentence.
         for a in adjs_tokens:
             if get_token_sent(p)==get_token_sent(a):
@@ -184,35 +172,13 @@ def get_dist(doc):
         distance_dic[p]=(a, shortest_path_test, shortest_path_length_test)
     print(f'Dict with person and distance to the nearest adj is {distance_dic}')
 
-    pd.DataFrame(distance_dic).to_csv('/Users/wnba/PycharmProjects/readpoem/venv/output/test_output.csv', index=False)
-    ######
-    # Get a list of entity & pron in string format
+    pd.DataFrame(distance_dic).to_csv('/Users/wnba/PycharmProjects/readpoem/venv/output/dist_to_adj_output.csv', index=False)
+ 
 
+clean_nums(textfile)
+remove_brackets_words(textfile)
+remove_brackets(textfile)
 
-
-    # Get the length and path from each item in object_list to the nearest adj
-    #get sentence id , the compare all adj?
-    #for
-    '''entity1 = 'sue'.lower()
-    entity2 = 'tired'
-    print(nx.shortest_path_length(graph, source=entity1, target=entity2))
-    print(nx.shortest_path(graph, source=entity1, target=entity2))'''
-
-def write_output_csv(itemDict):
-    with open('/Users/wnba/PycharmProjects/readpoem/venv/output/test_output.csv', 'wb') as outfile:
-        listWriter = csv.DictWriter(
-            outfile,
-            fieldnames=itemDict[itemDict.keys()[0]].keys(),
-            delimiter=',',
-            quotechar='|',
-            quoting=csv.QUOTE_MINIMAL
-        )
-    for a in itemDict:
-        listWriter.writerow(a)
-#clean_nums(textfile)
-#remove_brackets_words(textfile)
-#remove_brackets(textfile)
-#run read input and get_pos to populate global people_ents list
 read_input(textfile)
 #add_ents(doc)
 get_pos(doc)
