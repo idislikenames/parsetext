@@ -12,19 +12,25 @@ import pandas as pd
 
 doc = None
 #textfile = "input/m.txt"#"input/oxford_old_babylonian.txt",]
-textfile = "input/test_middle_babylonian.txt"
+textfile = "input/test_standard_babylonian.txt"
+#textfile = "input/standard.txt"
+#textfile = "input/test_middle_babylonian.txt"
 nlp = spacy.load("en_core_web_sm")
 people_tokens = []
 
 # delete numbers and symbols like [...], ·,
 def clean_nums(textfile):
     for line in fileinput.input(textfile, inplace=True):
-        print(re.sub("[0-9]|\[(\s*\.\s*)*\]|[·]", "", line), end='')
+        print(re.sub("[0-9]|\[(\s*\.\s*)*\]|[·][\.\.\.]", "", line), end='')
 
 # if brackets have words in them, remove only the brackets
 def remove_brackets(textfile):
     for line in fileinput.input(textfile, inplace=True):
         print (re.sub(r"\[([^]]+)\]", r"\1", line), end='')
+
+def remove_parentheses(textfile):
+    for line in fileinput.input(textfile, inplace=True):
+        print(re.sub(r"\([^)]*\)","", line), end='')
 
 # remove brackets and words in between
 def remove_brackets_words(textfile):
@@ -67,7 +73,7 @@ def get_pos(doc):
                                         "ent_type_"]))  # "dep_","shape_",
 
     # document level ent
-    ents_list = [(e.text, e.start_char, e.end_char, e.label_, e.label) for e in doc.ents]
+    ents_list = [(e.text, e.start_char, e.end_char, e.label_, e.label, e.sent) for e in doc.ents]
     print("")
     print("Entities at a doc level:")
     print(tabulate(ents_list, headers=["text", "start_char", "end_char", "label_", "label"]))
@@ -76,28 +82,38 @@ def get_pos(doc):
 # TODO: finish func of getting all the list of ents checked & assigned
 # TODO: see if new / wrong ent functions can be merged.
 def add_ents(doc): #Enkidu as example row 16 in doc.
-    candidate_token = [token for token in doc if token.text.lower() in ("cp",)]
+    #candidate_token: tokens to be checked or re-tagged
+    #==maybe should use token.text.lower() but dont know the lower case for Ḫumbaba
+    with open("input/names.txt") as f:
+        names = f.readlines()
+    name_list = [x.strip() for x in names]
+    print(f"namelist is {name_list}")
+    candidate_token = [token for token in doc if token.text in name_list]
+    candidate_token_text =[t.text for t in candidate_token]
+    for c in candidate_token:
+        print(f'candidate_token at the beginning is {c.i}, id is {c.text}, pos is {c.pos_}, ent is {c.ent_type_ }')
     #idx is char offset within the doc
     #for existing incorrect ent
     new_ents = []
     for ent in doc.ents:
-        if ent.label_ != "PERSON" and ent.text.lower() =="cp": # TODO: change to check in list
+        if ent.label_ != "PERSON" and ent.text in candidate_token_text: #ent.text.lower()
             new_ent = Span(doc, ent.start, ent.end, label="PERSON")
-            new_ents.append(new_ent)
+            new_ents.append(new_ent) # create new ent
         else:
-            new_ents.append(ent)
-    doc.ents = new_ents
-
+            new_ents.append(ent) #keep existing ent
+    doc.ents = new_ents #replace old doc.ents with new list
+    print(f'after first loop, doc.ents is {doc.ents}')
     # for new ent, if a candidate token was not assigned an entity type
     for i in range(len(candidate_token)):
         if candidate_token[i].ent_type_ == '':
-            print (f'Here is candidates and their token i {candidate_token[0],candidate_token[0].i}')# , candidate_token[0].idx}')
-            start_po = candidate_token[0].i
-            new_ent = Span(doc,start_po,start_po+1, label="PERSON") # Enkidu is at 20 , create a Span for the new entity
-            print (f'new ent is {new_ent}')
+            #print (f'Here is candidates and their token i {candidate_token[i],candidate_token[i].i}')# , candidate_token[0].idx}')
+            start_po = candidate_token[i].i
+            new_ent = Span(doc,start_po,start_po+1, label="PERSON") # create a Span for the new entity
+            #print (f'new ent is {new_ent}')
             doc.ents = list(doc.ents) + [new_ent]
 
     print('After', doc.ents)
+
 
 
 def get_verb(doc):
@@ -152,13 +168,16 @@ def get_dist(doc):
         for a in adjs_tokens:
             if get_token_sent(k)==get_token_sent(a):
                 people_adj_dict[k].append(a)
+    print(f"people_adj_dict is this :{people_adj_dict}")
+    non_tempty_people_adj_dict = {k: v for k, v in people_adj_dict.items() if v}  # remove empty dic items
+    print(f"non_empty_people_adj_dict is this :{non_tempty_people_adj_dict}")
 
     # distance_dic stores person and shortest path info.
     distance_dic = {}
-    for p in people_adj_dict.keys():
+    for p in non_tempty_people_adj_dict.keys():
         shortest_path_length_test = 99999 #default length
         shortest_path_test = ''
-        for a in people_adj_dict.get(p): # iterate through all the adj under that person, update the shortest path for that person
+        for a in non_tempty_people_adj_dict.get(p): # iterate through all the adj under that person, update the shortest path for that person
             path = nx.shortest_path(graph, source=a.text.lower(), target=p.text.lower())
             len = nx.shortest_path_length(graph, source=a.text.lower(), target=p.text.lower())
             if shortest_path_length_test > len:
@@ -166,17 +185,18 @@ def get_dist(doc):
                 shortest_path_test = path
         distance_dic[p]=(a, shortest_path_test, shortest_path_length_test)
     print(f'Dict with person and distance to the nearest adj is {distance_dic}')
-
     pd.DataFrame(distance_dic).to_csv('/Users/wnba/PycharmProjects/readpoem/venv/output/dist_to_adj_output.csv', index=False)
+
 
 
 clean_nums(textfile)
 remove_brackets_words(textfile)
 remove_brackets(textfile)
-
+remove_parentheses(textfile)
 read_input(textfile)
-#add_ents(doc)
+add_ents(doc)
 get_pos(doc)
 get_verb(doc)
 get_dist(doc)
 
+#print(f'the 2nd they ({doc[50]}) is in the sentence {get_token_sent(doc[50])}')
