@@ -9,10 +9,12 @@ import fileinput
 import networkx as nx
 import csv
 import pandas as pd
+import numpy as np
 
 doc = None
-#textfile = "input/m.txt"#"input/oxford_old_babylonian.txt",]
-textfile = "input/test_standard_babylonian.txt"
+textfile = "input/m.txt"#"input/oxford_old_babylonian.txt",]
+#textfile = "input/small.txt"
+#textfile = "input/test_standard_babylonian.txt"
 #textfile = "input/standard.txt"
 #textfile = "input/test_middle_babylonian.txt"
 nlp = spacy.load("en_core_web_sm")
@@ -75,8 +77,8 @@ def get_pos(doc):
     # document level ent
     ents_list = [(e.text, e.start_char, e.end_char, e.label_, e.label, e.sent) for e in doc.ents]
     print("")
-    print("Entities at a doc level:")
-    print(tabulate(ents_list, headers=["text", "start_char", "end_char", "label_", "label"]))
+    #print("Entities at a doc level:")
+    #print(tabulate(ents_list, headers=["text", "start_char", "end_char", "label_", "label"]))
 
 # add or modify incorrect tags
 # TODO: finish func of getting all the list of ents checked & assigned
@@ -87,7 +89,7 @@ def add_ents(doc): #Enkidu as example row 16 in doc.
     with open("input/names.txt") as f:
         names = f.readlines()
     name_list = [x.strip() for x in names]
-    print(f"namelist is {name_list}")
+    #print(f"namelist is {name_list}")
     candidate_token = [token for token in doc if token.text in name_list]
     candidate_token_text =[t.text for t in candidate_token]
     for c in candidate_token:
@@ -102,7 +104,7 @@ def add_ents(doc): #Enkidu as example row 16 in doc.
         else:
             new_ents.append(ent) #keep existing ent
     doc.ents = new_ents #replace old doc.ents with new list
-    print(f'after first loop, doc.ents is {doc.ents}')
+    #print(f'after first loop, doc.ents is {doc.ents}')
     # for new ent, if a candidate token was not assigned an entity type
     for i in range(len(candidate_token)):
         if candidate_token[i].ent_type_ == '':
@@ -157,13 +159,14 @@ def get_dist(doc):
     #print(f'edges is {edges}')
     adjs_tokens = [token for token in doc if token.is_stop != True and token.is_punct != True and token.pos_ == "ADJ"]
     people_tokens = [token for token in doc if token.ent_type_ == "PERSON" or token.pos_ == "PRON"] #chang to use ent in doc.ents?
-    print(f'adj list is {adjs_tokens}')
+    print(f'adjs_tokens is {adjs_tokens}')
     print(f'people list is {people_tokens}')
 
     # first get a dict with token and it's sentence, (bcs no sentence id, it builds a dict for later calculation) .
     #like this: {(key people token, [adj list ] ), (another person as key, [adj list] )...}
     value = []
     people_adj_dict = {key: list(value) for key in people_tokens}
+    print(f"people_adj_dict at this point is {people_adj_dict}" )
     for k in people_adj_dict.keys():
         for a in adjs_tokens:
             if get_token_sent(k)==get_token_sent(a):
@@ -186,17 +189,146 @@ def get_dist(doc):
         distance_dic[p]=(a, shortest_path_test, shortest_path_length_test)
     print(f'Dict with person and distance to the nearest adj is {distance_dic}')
     pd.DataFrame(distance_dic).to_csv('/Users/wnba/PycharmProjects/readpoem/venv/output/dist_to_adj_output.csv', index=False)
+    return adjs_tokens
 
 
 
-clean_nums(textfile)
-remove_brackets_words(textfile)
-remove_brackets(textfile)
-remove_parentheses(textfile)
+# corpus: [['All', 'that', 'glitters', 'is', 'not', 'gold'], ['All', 'is', 'well', 'that', 'ends', 'well']]
+#words is ['All', 'ends', 'glitters', 'gold', 'is', 'not', 'that', 'well']
+#word2Ind is {'All': 0, 'that': 1, 'glitters': 2, 'is': 3, 'not': 4, 'gold': 5, 'well': 6, 'ends': 7}
+# line is ['All', 'that', 'glitters', 'is', 'not', 'gold']
+
+def distinct_words(corpus):
+    """ Determine a list of distinct words for the corpus.
+        Params:
+            corpus (list of list of strings): corpus of documents
+        Return:
+            corpus_words (list of strings): list of distinct words across the corpus, sorted (using python 'sorted' function)
+            num_corpus_words (integer): number of distinct words across the corpus
+    """
+    corpus_words = []
+    num_corpus_words = -1
+
+    # ------------------
+    # Write your implementation here.
+    corpus_words = [word for line in corpus for word in line]
+    corpus_words_set = set(corpus_words)
+    corpus_words = sorted(list(corpus_words_set))
+    num_corpus_words = len(corpus_words)
+
+    # ------------------
+
+    return corpus_words, num_corpus_words
+
+def compute_co_occurrence_matrix(doc, adjs_tokens_list, window_size=5):
+    """ Compute co-occurrence matrix for the given corpus and window_size (default of 4).
+
+        Note: Each word in a document should be at the center of a window. Words near edges will have a smaller
+              number of co-occurring words.
+
+              For example, if we take the document "START All that glitters is not gold END" with window size of 4,
+              "All" will co-occur with "START", "that", "glitters", "is", and "not".
+
+        Params:
+            corpus (list of list of strings): corpus of documents
+            window_size (int): size of context window
+        Return:
+            M (numpy matrix of shape (number of corpus words, number of corpus words)):
+                Co-occurence matrix of word counts.
+                The ordering of the words in the rows/columns should be the same as the ordering of the words given by the distinct_words function.
+            word2Ind (dict): dictionary that maps word to index (i.e. row/column number) for matrix M.
+    """
+    #words, num_words = distinct_words(corpus)
+
+    #print(f"words is {words}")
+    words= doc  # ['i', 'like,','cp','and','like','cp','very','much']
+
+    unique_adj_text = []
+    for i in adjs_tokens_list:
+        if i.text not in unique_adj_text:
+            unique_adj_text.append(i.text)
+
+    unique_adj =[]
+    for i in adjs_tokens_list:
+        #unique_adj_text =[n.text for n in unique_adj]
+        if i.text in unique_adj_text:# and i.text not in unique_adj_text:
+            unique_adj.append(i)
+
+    num_words = len(unique_adj_text)  # unique number of unique adj
+    print(f"unique_adj_text is {unique_adj_text}")
+    print(f"unique_adj is {unique_adj}")
+
+    # M = None
+    word2Ind = {}
+
+    # ------------------
+    # Write your implementation here.
+    for i in range(len(words)):
+        word2Ind[words[i]] = i # word[i] is key, and 0,1.... as index is value
+    #word2Ind = {'All': 0, 'that': 1, 'glitters': 2, 'is': 3, 'not': 4, 'gold': 5, 'well': 6, 'ends': 7}
+    # print(f"word2Ind is {word2Ind}")
+
+    adj2Ind= {}
+    for i in range(len(unique_adj_text)):
+        adj2Ind[unique_adj_text[i]] = i # word[i] is key, and 0,1.... as index is value
+    print(f"adj2Ind is {adj2Ind}")
+
+
+    print(f"demension is {num_words}") # is wrong!!!!!!!!!!!!!
+    print(f"doc is {doc}")
+    M = np.zeros((num_words, num_words)) #init array
+    #for line in corpus:
+        #print(f"line is {line}")
+    print(f'adjs_tokens_list is {adjs_tokens_list}')
+    print(f'adjs_tokens_list ====ID=== is ')
+    for i in adjs_tokens_list:
+        print(i.i)
+    for n in adjs_tokens_list: # for i in adj list[with index in doc]?
+        # for x in doc?
+        print (f"this should be the index of token in doc {n.i}")
+        target = doc[n.i]
+        #print(f"target TYPE is {type(target)}")
+        print(f"target is {target}")
+        target_index = adj2Ind[target.text]
+        #print(f'target_index is {target_index}')
+
+        left = max(n.i - window_size, 0)
+        #right = min(i + window_size, len(line) - 1)
+        for j in range(left, n.i):
+            window_word = doc[j]
+            print(f"window_word is {window_word}")
+            #print(f"window_word TYPE is {type(window_word)}")
+            #print(f"Item in unique_adj TYPE is {type(unique_adj[0])}")
+            if window_word.pos_ == "ADJ":
+                print(f'target_index is {target_index}')
+                print(f'window_word_index is {adj2Ind[window_word.text]}')
+                M[target_index][adj2Ind[window_word.text]] += 1
+                M[adj2Ind[window_word.text]][target_index] += 1
+                #M[unique_adj.index(target)][unique_adj.index(window_word)] += 1
+                #M[unique_adj.index(window_word)][unique_adj.index(target)] += 1
+        #print("one window round")
+
+
+    # ------------------
+
+    return M, word2Ind, unique_adj_text
+
+
+#clean_nums(textfile)
+#remove_brackets_words(textfile)
+#remove_brackets(textfile)
+#remove_parentheses(textfile)
 read_input(textfile)
 add_ents(doc)
 get_pos(doc)
 get_verb(doc)
-get_dist(doc)
+adjs_tokens_list= get_dist(doc)
+
+#compute_co_occurrence_matrix()
+M, word2Ind, unique_adj_text= compute_co_occurrence_matrix(doc, adjs_tokens_list)
+print(M)
+df = pd.DataFrame(M, index= unique_adj_text, columns=unique_adj_text)
+print(df)
+
 
 #print(f'the 2nd they ({doc[50]}) is in the sentence {get_token_sent(doc[50])}')
