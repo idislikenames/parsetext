@@ -1,0 +1,110 @@
+One thing we could look at as well is whether lord as a term is always associated with Gilgamesh or also other entities.
+
+About distance metrics, I think we have a few options:
+a) we calculate the distance of both adjectives and verbs to the nearest identified character entity and/or pronoun.
+b) we calculate average distances between any adjective/verb.
+
+
+To do
+1)clean infinity (symbol ∞).
+2) [...] only
+
+
+
+
+matrics:
+                    nearest_ent1 dist , nearest_ent2 dist , nearest_ent3  dist
+adj1appearence
+adj2appearence
+
+
+matrix:
+
+        adj1    adj2   adj3 ....
+adj1      0       2      1
+adj2      2              3
+adj3      1       3
+
+
+
+
+
+=====
+Here is a starting point for your project work.
+
+- Analyse different English translations of the Gilgamish epic using
+natural language processing.
+
+- Focus the analysis on verbs, adjectives and nouns used in the texts
+and assess to which extend emotion, value and trait terms are used with
+reference to fictional characters named in the epic.
+- Provide an overview of how the different translations compare using
+appropriate statistical tools.
+
+Assessment items:
+- Deliver the code of the analysis so the results can be reproduced. 10%
+- Give a presentation about the results. 15%
+- Write a research report of 4000 words about what has been done and
+what has been found. 75%
+
+
+# create matrix
+# window through input text, using a center word,
+# and count[] n assign num of adj coocurrance to that position, or add +new num count
+'''
+def get_adj_matrix ():
+    adjs_tokens_t = ["blue", "sad", "happy"]
+    headlines = [["first","is","fis","and"],["second", "is", "sec"],["third", "is", "thr", "and"],["fourth", "is", "for"],["fifth", "is", "fif"]]
+    back_window = 2
+    front_window = 2
+    skipgram_counts = Counter()
+    for token in doc:
+        if token = adj
+            check in windows 5 for adj
+
+
+    # note add dynammic window hyperparameter
+
+    # note we store the token vocab indices in the skipgram counter
+    # note we use Levy, Goldberg, Dagan notation (word, context) as opposed to (focus, context)
+    unigram_counts = Counter()
+    for ii, headline in enumerate(headlines):
+        if ii % 200000 == 0:
+            print(f'finished {ii / len(headlines):.2%} of headlines')
+        for token in headline:
+            unigram_counts[token] += 1
+
+    tok2indx = {tok: indx for indx, tok in enumerate(unigram_counts.keys())}
+    print(f'tok2indx is {tok2indx}')
+    indx2tok = {indx: tok for tok, indx in tok2indx.items()}
+    print(f'indx2tok is {indx2tok}')
+    print('vocabulary size: {}'.format(len(unigram_counts)))
+    print('most common: {}'.format(unigram_counts.most_common(10)))
+
+    back_window = 2
+    front_window = 2
+    skipgram_counts = Counter()
+    for iheadline, headline in enumerate(headlines): #indexed list  (0, seq[0]), (1, seq[1]),
+        print(f'iheadline is {iheadline}')
+        print(f'headline is {headline}')
+        tokens = [tok2indx[tok] for tok in headline]
+        print(f'tokens is {tokens}')
+        for ii_word, word in enumerate(tokens):
+            ii_context_min = max(0, ii_word - back_window)
+            print(f'ii_context_min is {ii_context_min}')
+            ii_context_max = min(len(headline) - 1, ii_word + front_window)
+            print(f'ii_context_max is {ii_context_max}')
+
+            ii_contexts = [
+                ii for ii in range(ii_context_min, ii_context_max + 1)
+                if ii != ii_word]
+            print(f'ii_context is {ii_contexts}')
+            for ii_context in ii_contexts:
+                skipgram = (tokens[ii_word], tokens[ii_context])
+                skipgram_counts[skipgram] += 1
+
+    print('number of skipgrams: {}'.format(len(skipgram_counts)))
+    most_common = [
+        (indx2tok[sg[0][0]], indx2tok[sg[0][1]], sg[1])
+        for sg in skipgram_counts.most_common(10)]
+    print('most common: {}'.format(most_common))

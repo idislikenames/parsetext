@@ -1,0 +1,831 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="a20a7c7d-81c1-41b1-9ff0-87dcdcf58d11" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/venv/stats.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/input/standard.txt" beforeDir="false" afterPath="$PROJECT_DIR$/venv/input/standard.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/input/standard_babylonian.txt" beforeDir="false" afterPath="$PROJECT_DIR$/venv/input/standard_babylonian.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/input/test_middle_babylonian.txt" beforeDir="false" afterPath="$PROJECT_DIR$/venv/input/test_middle_babylonian.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/input/test_standard_babylonian.txt" beforeDir="false" afterPath="$PROJECT_DIR$/venv/input/test_standard_babylonian.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/venv/pip-selfcheck.json" beforeDir="false" afterPath="$PROJECT_DIR$/venv/pip-selfcheck.json" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/venv/parser.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="137">
+              <caret line="306" column="39" selection-start-line="306" selection-start-column="39" selection-end-line="306" selection-end-column="39" />
+              <folding>
+                <element signature="e#0#12#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/Library/Caches/PyCharmCE2018.3/python_stubs/-461117164/builtins.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="247">
+              <caret line="2978" column="8" selection-start-line="2978" selection-start-column="8" selection-end-line="2978" selection-end-column="8" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/venv/input/names.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-314">
+              <caret line="21" column="7" selection-start-line="21" selection-start-column="7" selection-end-line="21" selection-end-column="7" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/venv/output/verb_freq.csv">
+          <provider selected="true" editor-type-id="csv-table-editor">
+            <state showInfoPanel="true" fixedHeaders="false" rowLines="3">
+              <column index="0" width="100" />
+              <column index="1" width="100" />
+            </state>
+          </provider>
+          <provider editor-type-id="csv-text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/venv/output/dist_to_adj_output.csv">
+          <provider selected="true" editor-type-id="csv-table-editor">
+            <state showInfoPanel="true" fixedHeaders="false" rowLines="3">
+              <column index="0" width="100" />
+              <column index="1" width="100" />
+              <column index="2" width="100" />
+              <column index="3" width="100" />
+            </state>
+          </provider>
+          <provider editor-type-id="csv-text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/venv/stats.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-4">
+              <caret line="100" column="29" lean-forward="true" selection-start-line="100" selection-start-column="29" selection-end-line="100" selection-end-column="29" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/venv/notes">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1650">
+              <caret line="110" selection-start-line="110" selection-end-line="110" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/venv/input/m.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="45">
+              <caret line="3" column="60" lean-forward="true" selection-start-line="3" selection-start-column="60" selection-end-line="3" selection-end-column="60" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/venv/input/small.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="15">
+              <caret line="1" selection-start-line="1" selection-end-line="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>PRON</find>
+      <find>there</find>
+      <find>there will be</find>
+      <find>fare</find>
+      <find>aga</find>
+      <find>Exuberant</find>
+      <find>exuberant</find>
+      <find>anu</find>
+      <find>enkidu</find>
+      <find>person_e</find>
+      <find>wise</find>
+      <find>exalted</find>
+      <find>loud</find>
+      <find>they</find>
+      <find>noisy</find>
+      <find>enki</find>
+      <find>enki</find>
+      <find>Ḫumbaba</find>
+      <find>Enkidu</find>
+      <find>extent</find>
+      <find>extant</find>
+      <find>get_token_sent</find>
+      <find>Enki</find>
+      <find>demension</find>
+      <find>adj</find>
+      <find>adj list</find>
+      <find>name</find>
+      <find>doc</find>
+      <find>unique_adj</find>
+      <find>type</find>
+    </findStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="backup" />
+      </map>
+    </option>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/venv/input/6bMBUrw.txt" />
+        <option value="$PROJECT_DIR$/venv/input/test" />
+        <option value="$PROJECT_DIR$/venv/input/oxford_old_babylonian.txt" />
+        <option value="$PROJECT_DIR$/venv/input/06aMB_Nippur_W" />
+        <option value="$PROJECT_DIR$/venv/input/06aMB_Nippur_W.txt" />
+        <option value="$PROJECT_DIR$/venv/input/middle_babylonian.txt" />
+        <option value="$PROJECT_DIR$/venv/input/standard.txt" />
+        <option value="$PROJECT_DIR$/venv/input/names.txt" />
+        <option value="$PROJECT_DIR$/venv/input/test_middle_babylonian.txt" />
+        <option value="$PROJECT_DIR$/venv/input/standard_babylonian.txt" />
+        <option value="$PROJECT_DIR$/venv/input/test_standard_babylonian.txt" />
+        <option value="$PROJECT_DIR$/venv/input/m.txt" />
+        <option value="$PROJECT_DIR$/venv/notes" />
+        <option value="$PROJECT_DIR$/venv/input/small.txt" />
+        <option value="$PROJECT_DIR$/venv/stats.py" />
+        <option value="$PROJECT_DIR$/venv/parser.py" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="18" />
+    <option name="y" value="31" />
+    <option name="width" value="1440" />
+    <option name="height" value="825" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="readpoem" type="b2602c69:ProjectViewProjectNode" />
+              <item name="readpoem" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="readpoem" type="b2602c69:ProjectViewProjectNode" />
+              <item name="readpoem" type="462c0819:PsiDirectoryNode" />
+              <item name="venv" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="readpoem" type="b2602c69:ProjectViewProjectNode" />
+              <item name="readpoem" type="462c0819:PsiDirectoryNode" />
+              <item name="venv" type="462c0819:PsiDirectoryNode" />
+              <item name="input" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="readpoem" type="b2602c69:ProjectViewProjectNode" />
+              <item name="readpoem" type="462c0819:PsiDirectoryNode" />
+              <item name="venv" type="462c0819:PsiDirectoryNode" />
+              <item name="output" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/venv/input" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Python.parser">
+    <configuration name="parser" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="readpoem" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/venv" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/venv/parser.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="stats" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="readpoem" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/venv" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/venv/stats.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.parser" />
+        <item itemvalue="Python.stats" />
+        <item itemvalue="Python.parser" />
+        <item itemvalue="Python.parser" />
+        <item itemvalue="Python.parser" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a20a7c7d-81c1-41b1-9ff0-87dcdcf58d11" name="Default Changelist" comment="" />
+      <created>1584344621446</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1584344621446</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="TodoView" selected-index="1">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="57" y="196" width="1440" height="823" extended-state="0" />
+    <editor active="true" />
+    <layout>
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.20366456" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.7005151" visible="true" weight="0.4957627" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.3286119" />
+      <window_info anchor="bottom" id="Version Control" order="7" weight="0.3286119" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.3281471" />
+      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.2994849" side_tool="true" weight="0.34941763" />
+      <window_info anchor="bottom" id="Python Console" order="10" weight="0.3281471" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+    </layout>
+    <layout-to-restore>
+      <window_info id="Favorites" order="0" side_tool="true" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.21337341" />
+      <window_info id="Structure" order="2" side_tool="true" weight="0.25" />
+      <window_info anchor="bottom" id="Terminal" order="0" weight="0.3281471" />
+      <window_info anchor="bottom" id="Event Log" order="1" side_tool="true" />
+      <window_info anchor="bottom" id="Version Control" order="2" visible="true" weight="0.3286119" />
+      <window_info anchor="bottom" id="Python Console" order="3" weight="0.3281471" />
+      <window_info anchor="bottom" id="Message" order="4" />
+      <window_info anchor="bottom" id="Find" order="5" />
+      <window_info anchor="bottom" id="Run" order="6" weight="0.407932" />
+      <window_info anchor="bottom" id="Debug" order="7" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="8" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="9" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="10" weight="0.3286119" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+    </layout-to-restore>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file:///Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/typing.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="1491" column="8" selection-start-line="1491" selection-start-column="8" selection-end-line="1491" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/input/ETCSL1.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="258" selection-start-column="251" selection-end-column="258" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/re.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="191" selection-start-line="191" selection-end-line="191" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/3/collections/__init__.pyi">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="115">
+          <caret line="252" column="19" selection-start-line="252" selection-start-column="8" selection-end-line="252" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/input/test" />
+    <entry file="file://$PROJECT_DIR$/venv/lib/python3.7/site-packages/spacy/language.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="388">
+          <caret line="428" selection-start-line="428" selection-end-line="428" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/lib/python3.7/site-packages/networkx/algorithms/shortest_paths/generic.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="121">
+          <caret line="311" selection-start-line="311" selection-end-line="311" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/input/oxford_old_babylonian.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2812">
+          <caret line="208" column="295" selection-start-line="208" selection-start-column="295" selection-end-line="208" selection-end-column="295" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/input/6bMBUrw.txt" />
+    <entry file="file://$PROJECT_DIR$/venv/lib/python3.7/site-packages/networkx/algorithms/shortest_paths/unweighted.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="222" selection-start-line="222" selection-end-line="222" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/lib/python3.7/site-packages/panda/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#0#32#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/lib/python3.7/site-packages/pandas/core/internals/construction.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="140">
+          <caret line="253" selection-start-line="253" selection-end-line="253" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/lib/python3.7/site-packages/pandas/core/frame.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="212">
+          <caret line="434" selection-start-line="434" selection-end-line="434" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/input/middle_babylonian.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1236">
+          <caret line="5" column="12" selection-start-line="5" selection-start-column="12" selection-end-line="5" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/output/test_output.csv">
+      <provider selected="true" editor-type-id="csv-table-editor">
+        <state showInfoPanel="false" fixedHeaders="false" rowLines="3">
+          <column index="0" width="100" />
+          <column index="1" width="100" />
+          <column index="2" width="100" />
+          <column index="3" width="100" />
+          <column index="4" width="100" />
+          <column index="5" width="100" />
+          <column index="6" width="100" />
+          <column index="7" width="100" />
+          <column index="8" width="100" />
+          <column index="9" width="100" />
+          <column index="10" width="100" />
+          <column index="11" width="100" />
+          <column index="12" width="100" />
+          <column index="13" width="100" />
+          <column index="14" width="100" />
+          <column index="15" width="100" />
+          <column index="16" width="100" />
+          <column index="17" width="100" />
+          <column index="18" width="100" />
+          <column index="19" width="100" />
+          <column index="20" width="100" />
+          <column index="21" width="100" />
+          <column index="22" width="100" />
+          <column index="23" width="100" />
+          <column index="24" width="100" />
+          <column index="25" width="100" />
+          <column index="26" width="100" />
+          <column index="27" width="100" />
+          <column index="28" width="100" />
+          <column index="29" width="100" />
+          <column index="30" width="100" />
+          <column index="31" width="100" />
+          <column index="32" width="100" />
+          <column index="33" width="100" />
+          <column index="34" width="100" />
+          <column index="35" width="100" />
+          <column index="36" width="100" />
+          <column index="37" width="100" />
+          <column index="38" width="100" />
+          <column index="39" width="100" />
+          <column index="40" width="100" />
+          <column index="41" width="100" />
+          <column index="42" width="100" />
+          <column index="43" width="100" />
+          <column index="44" width="100" />
+          <column index="45" width="100" />
+          <column index="46" width="100" />
+          <column index="47" width="100" />
+          <column index="48" width="100" />
+          <column index="49" width="100" />
+          <column index="50" width="100" />
+          <column index="51" width="100" />
+          <column index="52" width="100" />
+          <column index="53" width="100" />
+          <column index="54" width="100" />
+          <column index="55" width="100" />
+          <column index="56" width="100" />
+          <column index="57" width="100" />
+          <column index="58" width="100" />
+          <column index="59" width="100" />
+          <column index="60" width="100" />
+          <column index="61" width="100" />
+          <column index="62" width="100" />
+          <column index="63" width="100" />
+          <column index="64" width="100" />
+          <column index="65" width="100" />
+          <column index="66" width="100" />
+          <column index="67" width="100" />
+          <column index="68" width="100" />
+          <column index="69" width="100" />
+          <column index="70" width="100" />
+          <column index="71" width="100" />
+          <column index="72" width="100" />
+          <column index="73" width="100" />
+          <column index="74" width="100" />
+          <column index="75" width="100" />
+          <column index="76" width="100" />
+          <column index="77" width="100" />
+          <column index="78" width="100" />
+          <column index="79" width="100" />
+          <column index="80" width="100" />
+          <column index="81" width="100" />
+          <column index="82" width="100" />
+          <column index="83" width="100" />
+          <column index="84" width="100" />
+          <column index="85" width="100" />
+          <column index="86" width="100" />
+          <column index="87" width="100" />
+          <column index="88" width="100" />
+          <column index="89" width="100" />
+          <column index="90" width="100" />
+          <column index="91" width="100" />
+          <column index="92" width="100" />
+          <column index="93" width="100" />
+          <column index="94" width="100" />
+          <column index="95" width="100" />
+          <column index="96" width="100" />
+          <column index="97" width="100" />
+          <column index="98" width="100" />
+          <column index="99" width="100" />
+          <column index="100" width="100" />
+          <column index="101" width="100" />
+          <column index="102" width="100" />
+          <column index="103" width="100" />
+          <column index="104" width="100" />
+          <column index="105" width="100" />
+          <column index="106" width="100" />
+          <column index="107" width="100" />
+          <column index="108" width="100" />
+          <column index="109" width="100" />
+          <column index="110" width="100" />
+          <column index="111" width="100" />
+          <column index="112" width="100" />
+          <column index="113" width="100" />
+          <column index="114" width="100" />
+          <column index="115" width="100" />
+          <column index="116" width="100" />
+          <column index="117" width="100" />
+          <column index="118" width="100" />
+          <column index="119" width="100" />
+          <column index="120" width="100" />
+          <column index="121" width="100" />
+          <column index="122" width="100" />
+          <column index="123" width="100" />
+          <column index="124" width="100" />
+          <column index="125" width="100" />
+          <column index="126" width="100" />
+          <column index="127" width="100" />
+          <column index="128" width="100" />
+          <column index="129" width="100" />
+          <column index="130" width="100" />
+          <column index="131" width="100" />
+          <column index="132" width="100" />
+          <column index="133" width="100" />
+          <column index="134" width="100" />
+          <column index="135" width="100" />
+          <column index="136" width="100" />
+          <column index="137" width="100" />
+          <column index="138" width="100" />
+          <column index="139" width="100" />
+          <column index="140" width="100" />
+          <column index="141" width="100" />
+          <column index="142" width="100" />
+          <column index="143" width="100" />
+          <column index="144" width="100" />
+          <column index="145" width="100" />
+          <column index="146" width="100" />
+          <column index="147" width="100" />
+          <column index="148" width="100" />
+          <column index="149" width="100" />
+          <column index="150" width="100" />
+          <column index="151" width="100" />
+          <column index="152" width="100" />
+          <column index="153" width="100" />
+          <column index="154" width="100" />
+          <column index="155" width="100" />
+          <column index="156" width="100" />
+          <column index="157" width="100" />
+          <column index="158" width="100" />
+          <column index="159" width="100" />
+          <column index="160" width="100" />
+          <column index="161" width="100" />
+          <column index="162" width="100" />
+          <column index="163" width="100" />
+          <column index="164" width="100" />
+          <column index="165" width="100" />
+          <column index="166" width="100" />
+          <column index="167" width="100" />
+          <column index="168" width="100" />
+          <column index="169" width="100" />
+          <column index="170" width="100" />
+          <column index="171" width="100" />
+          <column index="172" width="100" />
+          <column index="173" width="100" />
+          <column index="174" width="100" />
+          <column index="175" width="100" />
+          <column index="176" width="100" />
+          <column index="177" width="100" />
+          <column index="178" width="100" />
+          <column index="179" width="100" />
+          <column index="180" width="100" />
+          <column index="181" width="100" />
+          <column index="182" width="100" />
+          <column index="183" width="100" />
+          <column index="184" width="100" />
+          <column index="185" width="100" />
+          <column index="186" width="100" />
+          <column index="187" width="100" />
+          <column index="188" width="100" />
+          <column index="189" width="100" />
+          <column index="190" width="100" />
+          <column index="191" width="100" />
+          <column index="192" width="100" />
+          <column index="193" width="100" />
+          <column index="194" width="100" />
+          <column index="195" width="100" />
+          <column index="196" width="100" />
+          <column index="197" width="100" />
+          <column index="198" width="100" />
+          <column index="199" width="100" />
+          <column index="200" width="100" />
+          <column index="201" width="100" />
+          <column index="202" width="100" />
+          <column index="203" width="100" />
+          <column index="204" width="100" />
+          <column index="205" width="100" />
+          <column index="206" width="100" />
+          <column index="207" width="100" />
+          <column index="208" width="100" />
+          <column index="209" width="100" />
+          <column index="210" width="100" />
+          <column index="211" width="100" />
+          <column index="212" width="100" />
+          <column index="213" width="100" />
+          <column index="214" width="100" />
+          <column index="215" width="100" />
+          <column index="216" width="100" />
+          <column index="217" width="100" />
+          <column index="218" width="100" />
+          <column index="219" width="100" />
+          <column index="220" width="100" />
+          <column index="221" width="100" />
+          <column index="222" width="100" />
+          <column index="223" width="100" />
+          <column index="224" width="100" />
+          <column index="225" width="100" />
+          <column index="226" width="100" />
+          <column index="227" width="100" />
+          <column index="228" width="100" />
+          <column index="229" width="100" />
+          <column index="230" width="100" />
+          <column index="231" width="100" />
+        </state>
+      </provider>
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" column="8" selection-start-line="4" selection-end-line="4" selection-end-column="8" />
+        </state>
+      </provider>
+      <provider editor-type-id="csv-text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" selection-start-line="7" selection-end-line="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Library/Caches/PyCharmCE2018.3/python_stubs/-461117164/spacy/tokens/token.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="115">
+          <caret line="301" selection-start-line="301" selection-end-line="302" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/input/standard.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="117">
+          <caret line="35" column="26" selection-start-line="35" selection-start-column="22" selection-end-line="35" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/input/test_middle_babylonian.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="157">
+          <caret line="387" column="70" selection-start-line="387" selection-start-column="70" selection-end-line="387" selection-end-column="70" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/input/test_standard_babylonian.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-4737" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/input/standard_babylonian.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="116">
+          <caret line="161" column="36" selection-end-line="476" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/output/dist_to_adj_output.csv">
+      <provider selected="true" editor-type-id="csv-table-editor">
+        <state showInfoPanel="true" fixedHeaders="false" rowLines="3">
+          <column index="0" width="100" />
+          <column index="1" width="100" />
+          <column index="2" width="100" />
+          <column index="3" width="100" />
+        </state>
+      </provider>
+      <provider editor-type-id="csv-text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/output/verb_freq.csv">
+      <provider selected="true" editor-type-id="csv-table-editor">
+        <state showInfoPanel="true" fixedHeaders="false" rowLines="3">
+          <column index="0" width="100" />
+          <column index="1" width="100" />
+        </state>
+      </provider>
+      <provider editor-type-id="csv-text-editor" />
+    </entry>
+    <entry file="file://$USER_HOME$/Library/Caches/PyCharmCE2018.3/python_stubs/-461117164/builtins.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="247">
+          <caret line="2978" column="8" selection-start-line="2978" selection-start-column="8" selection-end-line="2978" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/notes">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1650">
+          <caret line="110" selection-start-line="110" selection-end-line="110" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/input/small.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" selection-start-line="1" selection-end-line="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/input/names.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-314">
+          <caret line="21" column="7" selection-start-line="21" selection-start-column="7" selection-end-line="21" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/lib/python3.7/site-packages/spacy/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-172" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/lib/python3.7/site-packages/spacy/tokens/doc.pyx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1429" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/lib/python3.7/site-packages/spacy/tokens/doc.pxd">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-822" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/lib/python3.7/site-packages/spacy-2.2.4.dist-info/top_level.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/stats.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-4">
+          <caret line="100" column="29" lean-forward="true" selection-start-line="100" selection-start-column="29" selection-end-line="100" selection-end-column="29" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/input/m.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="3" column="60" lean-forward="true" selection-start-line="3" selection-start-column="60" selection-end-line="3" selection-end-column="60" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/venv/parser.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="137">
+          <caret line="306" column="39" selection-start-line="306" selection-start-column="39" selection-end-line="306" selection-end-column="39" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>
