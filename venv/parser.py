@@ -16,11 +16,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+
 doc = None
 #textfile = "input/m.txt"#"input/oxford_old_babylonian.txt",]
 #textfile = "input/small.txt"
-textfile = "input/test_standard_babylonian.txt"
-#textfile = "input/SB_01_I.txt"
+#textfile = "input/test_standard_babylonian.txt"
+textfile = "input/SB.txt"
 #textfile = "input/test_middle_babylonian.txt"
 nlp = spacy.load("en_core_web_sm")
 people_tokens = []
@@ -95,8 +96,6 @@ def add_ents(doc): #Enkidu as example row 16 in doc.
     #print(f"namelist is {name_list}")
     candidate_token = [token for token in doc if token.text in name_list]
     candidate_token_text =[t.text for t in candidate_token]
-    #for c in candidate_token:
-        #print(f'candidate_token at the beginning is {c.i}, id is {c.text}, pos is {c.pos_}, ent is {c.ent_type_ }')
     #idx is char offset within the doc
     #for existing incorrect ent
     new_ents = []
@@ -107,7 +106,7 @@ def add_ents(doc): #Enkidu as example row 16 in doc.
         else:
             new_ents.append(ent) #keep existing ent
     doc.ents = new_ents #replace old doc.ents with new list
-
+    #print(f'after first loop, doc.ents is {doc.ents}')
     # for new ent, if a candidate token was not assigned an entity type
     for i in range(len(candidate_token)):
         if candidate_token[i].ent_type_ == '':
@@ -216,34 +215,37 @@ def compute_co_occurrence_matrix(doc, adjs_tokens_list, window_size=8):
 
     unique_adj =[]
     for i in adjs_tokens_list:
-        if i.text in unique_adj_text:
+        #unique_adj_text =[n.text for n in unique_adj]
+        if i.text in unique_adj_text:# and i.text not in unique_adj_text:
             unique_adj.append(i)
 
-    num_words = len(unique_adj_text)  # number of unique adj
+    num_words = len(unique_adj_text)  # unique number of unique adj
     print(f"unique_adj_text is {unique_adj_text}")
     print(f"unique_adj is {unique_adj}")
 
     word2Ind = {}
-
     for i in range(len(words)):
         word2Ind[words[i]] = i # word[i] is key, and 0,1.... as index is value
-    #word2Ind = {'This': 0, 'can': 1, 'not': 2, 'be': 3, 'true': 4}
+    #word2Ind = {'This': 0, 'can': 1, 'not': 2}
     # print(f"word2Ind is {word2Ind}")
 
     adj2Ind= {}
     for i in range(len(unique_adj_text)):
-        adj2Ind[unique_adj_text[i]] = i # word[i] is key, and 0,1.... as index is value
+        adj2Ind[unique_adj_text[i]] = i
     print(f"adj2Ind is {adj2Ind}")
 
-
     print(f"demension is {num_words}")
+
     M = np.zeros((num_words, num_words)) #init array
+
     print(f'adjs_tokens_list is {adjs_tokens_list}')
 
     for n in adjs_tokens_list:
         target = doc[n.i]
+        #print(f"target TYPE is {type(target)}")
         print(f"target is {target}")
         target_index = adj2Ind[target.text]
+        #print(f'target_index is {target_index}')
 
         left = max(n.i - window_size, 0)
         #right = min(i + window_size, len(line) - 1)
@@ -253,8 +255,10 @@ def compute_co_occurrence_matrix(doc, adjs_tokens_list, window_size=8):
             #print(f"window_word TYPE is {type(window_word)}")
             #print(f"Item in unique_adj TYPE is {type(unique_adj[0])}")
             if window_word.pos_ == "ADJ":
-                #print(f'target_index is {target_index}')
-                #print(f'window_word_index is {adj2Ind[window_word.text]}')
+                #print("maybe error is here")
+                print(f'window word index is {window_word.i}')
+                print(f'target_index is {target_index}')
+                print(f'window_word_index is {adj2Ind[window_word.text]}')
                 M[target_index][adj2Ind[window_word.text]] += 1
                 M[adj2Ind[window_word.text]][target_index] += 1
 
@@ -262,6 +266,10 @@ def compute_co_occurrence_matrix(doc, adjs_tokens_list, window_size=8):
 
 
 def plot_reduced_embeddings(M_reduced, word2Ind, words):
+
+
+    words_index = [word2Ind[word] for word in words]
+    print(words_index)
     x_coords = [M_reduced[word_index][0] for word_index in words_index]
     y_coords = [M_reduced[word_index][1] for word_index in words_index]
 
@@ -293,7 +301,22 @@ out = model.fit_transform(M)
 
 #print(out)
 #print(f'to plot: {adj2Ind}')
-plot_reduced_embeddings(out, adj2Ind, unique_adj_text)
 
-plt.scatter(out[:, 0], out[:, 1], s=500)
-plt.axis('equal');
+plot_reduced_embeddings(out, adj2Ind, unique_adj_text)
+#plt.xlim(-0.02,0.01)
+#plt.ylim(0.01, 0.02)
+#ax.set_xlim
+#ax.set_ylim
+
+'''ax2 = plt.subplot(222)
+ax2.margins(x=-0.01, y=0.02)           # Values >0.0 zoom out
+ax2.scatter(out[:, 0], out[:, 1])
+ax2.set_title('Zoomed in')
+plt.show()'''
+
+
+plt.scatter(out[:, 0], out[:, 1])
+#plt.axis('equal');
+#plt.margins(x=0.02, y=0.01)
+#plt.axis([xmin,xmax,ymin,ymax])
+
