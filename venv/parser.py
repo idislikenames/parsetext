@@ -16,7 +16,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-
 doc = None
 #textfile = "input/m.txt"#"input/oxford_old_babylonian.txt",]
 #textfile = "input/small.txt"
@@ -108,7 +107,7 @@ def add_ents(doc): #Enkidu as example row 16 in doc.
         else:
             new_ents.append(ent) #keep existing ent
     doc.ents = new_ents #replace old doc.ents with new list
-    #print(f'after first loop, doc.ents is {doc.ents}')
+
     # for new ent, if a candidate token was not assigned an entity type
     for i in range(len(candidate_token)):
         if candidate_token[i].ent_type_ == '':
@@ -207,27 +206,8 @@ def distinct_words(corpus):
 
 
 def compute_co_occurrence_matrix(doc, adjs_tokens_list, window_size=8):
-    """ Compute co-occurrence matrix for the given corpus and window_size (default of 4).
 
-        Note: Each word in a document should be at the center of a window. Words near edges will have a smaller
-              number of co-occurring words.
-
-              For example, if we take the document "START All that glitters is not gold END" with window size of 4,
-              "All" will co-occur with "START", "that", "glitters", "is", and "not".
-
-        Params:
-            corpus (list of list of strings): corpus of documents
-            window_size (int): size of context window
-        Return:
-            M (numpy matrix of shape (number of corpus words, number of corpus words)):
-                Co-occurence matrix of word counts.
-                The ordering of the words in the rows/columns should be the same as the ordering of the words given by the distinct_words function.
-            word2Ind (dict): dictionary that maps word to index (i.e. row/column number) for matrix M.
-    """
-    #words, num_words = distinct_words(corpus)
-
-    #print(f"words is {words}")
-    words= doc  # ['i', 'like,','cp','and','like','cp','very','much']
+    words= doc
 
     unique_adj_text = []
     for i in adjs_tokens_list:
@@ -236,22 +216,18 @@ def compute_co_occurrence_matrix(doc, adjs_tokens_list, window_size=8):
 
     unique_adj =[]
     for i in adjs_tokens_list:
-        #unique_adj_text =[n.text for n in unique_adj]
-        if i.text in unique_adj_text:# and i.text not in unique_adj_text:
+        if i.text in unique_adj_text:
             unique_adj.append(i)
 
-    num_words = len(unique_adj_text)  # unique number of unique adj
+    num_words = len(unique_adj_text)  # number of unique adj
     print(f"unique_adj_text is {unique_adj_text}")
     print(f"unique_adj is {unique_adj}")
 
-    # M = None
     word2Ind = {}
 
-    # ------------------
-    # Write your implementation here.
     for i in range(len(words)):
         word2Ind[words[i]] = i # word[i] is key, and 0,1.... as index is value
-    #word2Ind = {'All': 0, 'that': 1, 'glitters': 2, 'is': 3, 'not': 4, 'gold': 5, 'well': 6, 'ends': 7}
+    #word2Ind = {'This': 0, 'can': 1, 'not': 2, 'be': 3, 'true': 4}
     # print(f"word2Ind is {word2Ind}")
 
     adj2Ind= {}
@@ -260,23 +236,14 @@ def compute_co_occurrence_matrix(doc, adjs_tokens_list, window_size=8):
     print(f"adj2Ind is {adj2Ind}")
 
 
-    print(f"demension is {num_words}") # is wrong!!!!!!!!!!!!!
-    #print(f"doc is {doc}")
+    print(f"demension is {num_words}")
     M = np.zeros((num_words, num_words)) #init array
-    #for line in corpus:
-        #print(f"line is {line}")
     print(f'adjs_tokens_list is {adjs_tokens_list}')
-    #print(f'adjs_tokens_list ====ID=== is ')
-    #for i in adjs_tokens_list:
-        #print(i.i)
-    for n in adjs_tokens_list: # for i in adj list[with index in doc]?
-        # for x in doc?
-        #print (f"this should be the index of token in doc {n.i}")
+
+    for n in adjs_tokens_list:
         target = doc[n.i]
-        #print(f"target TYPE is {type(target)}")
         print(f"target is {target}")
         target_index = adj2Ind[target.text]
-        #print(f'target_index is {target_index}')
 
         left = max(n.i - window_size, 0)
         #right = min(i + window_size, len(line) - 1)
@@ -286,47 +253,15 @@ def compute_co_occurrence_matrix(doc, adjs_tokens_list, window_size=8):
             #print(f"window_word TYPE is {type(window_word)}")
             #print(f"Item in unique_adj TYPE is {type(unique_adj[0])}")
             if window_word.pos_ == "ADJ":
-                #print("maybe error is here")
-                print(f'window word index is {window_word.i}')
-                print(f'target_index is {target_index}')
-                print(f'window_word_index is {adj2Ind[window_word.text]}')
+                #print(f'target_index is {target_index}')
+                #print(f'window_word_index is {adj2Ind[window_word.text]}')
                 M[target_index][adj2Ind[window_word.text]] += 1
                 M[adj2Ind[window_word.text]][target_index] += 1
-                #M[unique_adj.index(target)][unique_adj.index(window_word)] += 1
-                #M[unique_adj.index(window_word)][unique_adj.index(target)] += 1
-        #print("one window round")
-
-
-    # ------------------
 
     return M, word2Ind, unique_adj_text, adj2Ind
 
 
 def plot_reduced_embeddings(M_reduced, word2Ind, words):
-    """ Plot in a scatterplot the embeddings of the words specified in the list "words".
-        NOTE: do not plot all the words listed in M_reduced / word2Ind.
-        Include a label next to each point.
-
-        Params:
-            M_reduced (numpy matrix of shape (number of unique words in the corpus , k)): matrix of k-dimensioal word embeddings
-            word2Ind (dict): dictionary that maps word to indices for matrix M
-            words (list of strings): words whose embeddings we want to visualize
-    """
-
-    # ------------------
-    # Write your implementation here.
-    #M_reduced_plot_test = np.array([[1, 1], [-1, -1], [1, -1], [-1, 1], [0, 0]])
-#word2Ind_plot_test = {'test1': 0, 'test2': 1, 'test3': 2, 'test4': 3, 'test5': 4}
-#words = ['test1', 'test2', 'test3', 'test4', 'test5']
-#plot_embeddings(M_reduced_plot_test, word2Ind_plot_test, words)
-# reduced is [[-0.51429544 -0.30902101]
-    #  [ 0.51609532  0.30600573]
-    #  [-0.17262497 -0.10099812]
-    #  [ 0.          0.        ]
-    #  [ 0.17082509  0.1040134 ]]
-
-    words_index = [word2Ind[word] for word in words]
-    print(words_index)
     x_coords = [M_reduced[word_index][0] for word_index in words_index]
     y_coords = [M_reduced[word_index][1] for word_index in words_index]
 
@@ -362,6 +297,3 @@ plot_reduced_embeddings(out, adj2Ind, unique_adj_text)
 
 plt.scatter(out[:, 0], out[:, 1], s=500)
 plt.axis('equal');
-
-
-#print(f'the 2nd they ({doc[50]}) is in the sentence {get_token_sent(doc[50])}')
