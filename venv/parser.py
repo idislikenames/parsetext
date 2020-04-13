@@ -3,6 +3,9 @@ from spacy import displacy
 from spacy.tokens import Span
 from tabulate import tabulate
 from collections import Counter
+from sklearn.manifold import MDS
+from matplotlib import pyplot as plt
+
 
 import re
 import fileinput
@@ -10,12 +13,15 @@ import networkx as nx
 import csv
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+
+
 
 doc = None
-textfile = "input/m.txt"#"input/oxford_old_babylonian.txt",]
+#textfile = "input/m.txt"#"input/oxford_old_babylonian.txt",]
 #textfile = "input/small.txt"
-#textfile = "input/test_standard_babylonian.txt"
-#textfile = "input/standard.txt"
+textfile = "input/test_standard_babylonian.txt"
+#textfile = "input/SB_01_I.txt"
 #textfile = "input/test_middle_babylonian.txt"
 nlp = spacy.load("en_core_web_sm")
 people_tokens = []
@@ -23,7 +29,7 @@ people_tokens = []
 # delete numbers and symbols like [...], ·,
 def clean_nums(textfile):
     for line in fileinput.input(textfile, inplace=True):
-        print(re.sub("[0-9]|\[(\s*\.\s*)*\]|[·][\.\.\.]", "", line), end='')
+        print(re.sub("[0-9]|\[(\s*\.\s*)*\]|[·][\.\.\.]|[-]|[—]", "", line), end='')
 
 # if brackets have words in them, remove only the brackets
 def remove_brackets(textfile):
@@ -81,8 +87,6 @@ def get_pos(doc):
     #print(tabulate(ents_list, headers=["text", "start_char", "end_char", "label_", "label"]))
 
 # add or modify incorrect tags
-# TODO: finish func of getting all the list of ents checked & assigned
-# TODO: see if new / wrong ent functions can be merged.
 def add_ents(doc): #Enkidu as example row 16 in doc.
     #candidate_token: tokens to be checked or re-tagged
     #==maybe should use token.text.lower() but dont know the lower case for Ḫumbaba
@@ -92,8 +96,8 @@ def add_ents(doc): #Enkidu as example row 16 in doc.
     #print(f"namelist is {name_list}")
     candidate_token = [token for token in doc if token.text in name_list]
     candidate_token_text =[t.text for t in candidate_token]
-    for c in candidate_token:
-        print(f'candidate_token at the beginning is {c.i}, id is {c.text}, pos is {c.pos_}, ent is {c.ent_type_ }')
+    #for c in candidate_token:
+        #print(f'candidate_token at the beginning is {c.i}, id is {c.text}, pos is {c.pos_}, ent is {c.ent_type_ }')
     #idx is char offset within the doc
     #for existing incorrect ent
     new_ents = []
@@ -113,9 +117,6 @@ def add_ents(doc): #Enkidu as example row 16 in doc.
             new_ent = Span(doc,start_po,start_po+1, label="PERSON") # create a Span for the new entity
             #print (f'new ent is {new_ent}')
             doc.ents = list(doc.ents) + [new_ent]
-
-    print('After', doc.ents)
-
 
 
 def get_verb(doc):
@@ -157,7 +158,8 @@ def get_dist(doc):
                           '{0}'.format(child.lower_)))
     graph = nx.Graph(edges)
     #print(f'edges is {edges}')
-    adjs_tokens = [token for token in doc if token.is_stop != True and token.is_punct != True and token.pos_ == "ADJ"]
+    adjs_tokens = [token for token in doc if token.is_punct != True and token.pos_ == "ADJ"] #token.is_stop != True and ?????? taken out as very 530
+    # was classified as stop word
     people_tokens = [token for token in doc if token.ent_type_ == "PERSON" or token.pos_ == "PRON"] #chang to use ent in doc.ents?
     print(f'adjs_tokens is {adjs_tokens}')
     print(f'people list is {people_tokens}')
@@ -166,12 +168,12 @@ def get_dist(doc):
     #like this: {(key people token, [adj list ] ), (another person as key, [adj list] )...}
     value = []
     people_adj_dict = {key: list(value) for key in people_tokens}
-    print(f"people_adj_dict at this point is {people_adj_dict}" )
+    #print(f"people_adj_dict at this point is {people_adj_dict}" )
     for k in people_adj_dict.keys():
         for a in adjs_tokens:
             if get_token_sent(k)==get_token_sent(a):
                 people_adj_dict[k].append(a)
-    print(f"people_adj_dict is this :{people_adj_dict}")
+    #print(f"people_adj_dict is this :{people_adj_dict}")
     non_tempty_people_adj_dict = {k: v for k, v in people_adj_dict.items() if v}  # remove empty dic items
     print(f"non_empty_people_adj_dict is this :{non_tempty_people_adj_dict}")
 
@@ -192,35 +194,19 @@ def get_dist(doc):
     return adjs_tokens
 
 
-
-# corpus: [['All', 'that', 'glitters', 'is', 'not', 'gold'], ['All', 'is', 'well', 'that', 'ends', 'well']]
-#words is ['All', 'ends', 'glitters', 'gold', 'is', 'not', 'that', 'well']
-#word2Ind is {'All': 0, 'that': 1, 'glitters': 2, 'is': 3, 'not': 4, 'gold': 5, 'well': 6, 'ends': 7}
-# line is ['All', 'that', 'glitters', 'is', 'not', 'gold']
-
 def distinct_words(corpus):
-    """ Determine a list of distinct words for the corpus.
-        Params:
-            corpus (list of list of strings): corpus of documents
-        Return:
-            corpus_words (list of strings): list of distinct words across the corpus, sorted (using python 'sorted' function)
-            num_corpus_words (integer): number of distinct words across the corpus
-    """
     corpus_words = []
     num_corpus_words = -1
 
-    # ------------------
-    # Write your implementation here.
     corpus_words = [word for line in corpus for word in line]
     corpus_words_set = set(corpus_words)
     corpus_words = sorted(list(corpus_words_set))
     num_corpus_words = len(corpus_words)
 
-    # ------------------
-
     return corpus_words, num_corpus_words
 
-def compute_co_occurrence_matrix(doc, adjs_tokens_list, window_size=5):
+
+def compute_co_occurrence_matrix(doc, adjs_tokens_list, window_size=8):
     """ Compute co-occurrence matrix for the given corpus and window_size (default of 4).
 
         Note: Each word in a document should be at the center of a window. Words near edges will have a smaller
@@ -275,17 +261,17 @@ def compute_co_occurrence_matrix(doc, adjs_tokens_list, window_size=5):
 
 
     print(f"demension is {num_words}") # is wrong!!!!!!!!!!!!!
-    print(f"doc is {doc}")
+    #print(f"doc is {doc}")
     M = np.zeros((num_words, num_words)) #init array
     #for line in corpus:
         #print(f"line is {line}")
     print(f'adjs_tokens_list is {adjs_tokens_list}')
-    print(f'adjs_tokens_list ====ID=== is ')
-    for i in adjs_tokens_list:
-        print(i.i)
+    #print(f'adjs_tokens_list ====ID=== is ')
+    #for i in adjs_tokens_list:
+        #print(i.i)
     for n in adjs_tokens_list: # for i in adj list[with index in doc]?
         # for x in doc?
-        print (f"this should be the index of token in doc {n.i}")
+        #print (f"this should be the index of token in doc {n.i}")
         target = doc[n.i]
         #print(f"target TYPE is {type(target)}")
         print(f"target is {target}")
@@ -300,6 +286,8 @@ def compute_co_occurrence_matrix(doc, adjs_tokens_list, window_size=5):
             #print(f"window_word TYPE is {type(window_word)}")
             #print(f"Item in unique_adj TYPE is {type(unique_adj[0])}")
             if window_word.pos_ == "ADJ":
+                #print("maybe error is here")
+                print(f'window word index is {window_word.i}')
                 print(f'target_index is {target_index}')
                 print(f'window_word_index is {adj2Ind[window_word.text]}')
                 M[target_index][adj2Ind[window_word.text]] += 1
@@ -311,13 +299,48 @@ def compute_co_occurrence_matrix(doc, adjs_tokens_list, window_size=5):
 
     # ------------------
 
-    return M, word2Ind, unique_adj_text
+    return M, word2Ind, unique_adj_text, adj2Ind
 
 
-#clean_nums(textfile)
+def plot_reduced_embeddings(M_reduced, word2Ind, words):
+    """ Plot in a scatterplot the embeddings of the words specified in the list "words".
+        NOTE: do not plot all the words listed in M_reduced / word2Ind.
+        Include a label next to each point.
+
+        Params:
+            M_reduced (numpy matrix of shape (number of unique words in the corpus , k)): matrix of k-dimensioal word embeddings
+            word2Ind (dict): dictionary that maps word to indices for matrix M
+            words (list of strings): words whose embeddings we want to visualize
+    """
+
+    # ------------------
+    # Write your implementation here.
+    #M_reduced_plot_test = np.array([[1, 1], [-1, -1], [1, -1], [-1, 1], [0, 0]])
+#word2Ind_plot_test = {'test1': 0, 'test2': 1, 'test3': 2, 'test4': 3, 'test5': 4}
+#words = ['test1', 'test2', 'test3', 'test4', 'test5']
+#plot_embeddings(M_reduced_plot_test, word2Ind_plot_test, words)
+# reduced is [[-0.51429544 -0.30902101]
+    #  [ 0.51609532  0.30600573]
+    #  [-0.17262497 -0.10099812]
+    #  [ 0.          0.        ]
+    #  [ 0.17082509  0.1040134 ]]
+
+    words_index = [word2Ind[word] for word in words]
+    print(words_index)
+    x_coords = [M_reduced[word_index][0] for word_index in words_index]
+    y_coords = [M_reduced[word_index][1] for word_index in words_index]
+
+    for i, word in enumerate(words):
+        x = x_coords[i]
+        y = y_coords[i]
+        plt.scatter(x, y, marker='x', color='red')
+        plt.text(x + 0.0003, y + 0.0003, word, fontsize=9)
+    plt.show()
+
+clean_nums(textfile)
 #remove_brackets_words(textfile)
-#remove_brackets(textfile)
-#remove_parentheses(textfile)
+remove_brackets(textfile)
+remove_parentheses(textfile)
 read_input(textfile)
 add_ents(doc)
 get_pos(doc)
@@ -325,10 +348,20 @@ get_verb(doc)
 adjs_tokens_list= get_dist(doc)
 
 #compute_co_occurrence_matrix()
-M, word2Ind, unique_adj_text= compute_co_occurrence_matrix(doc, adjs_tokens_list)
+M, word2Ind, unique_adj_text, adj2Ind= compute_co_occurrence_matrix(doc, adjs_tokens_list)
 print(M)
 df = pd.DataFrame(M, index= unique_adj_text, columns=unique_adj_text)
 print(df)
+
+model = MDS(n_components=2, dissimilarity='precomputed', random_state=1)
+out = model.fit_transform(M)
+
+#print(out)
+#print(f'to plot: {adj2Ind}')
+plot_reduced_embeddings(out, adj2Ind, unique_adj_text)
+
+plt.scatter(out[:, 0], out[:, 1], s=500)
+plt.axis('equal');
 
 
 #print(f'the 2nd they ({doc[50]}) is in the sentence {get_token_sent(doc[50])}')
